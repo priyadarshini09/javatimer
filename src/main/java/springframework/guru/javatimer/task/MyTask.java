@@ -13,7 +13,7 @@ public class MyTask extends TimerTask {
     }
      public void timeConsumingTask() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(20000);
         }catch (InterruptedException ex) {
             ex.printStackTrace();
         }

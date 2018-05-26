@@ -7,6 +7,8 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class MyTaskTest {
@@ -48,26 +50,19 @@ public class MyTaskTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        timer.cancel();
-//        System.out.println("Timer cancelled");
     }
 
     @Test
     public void schedulingTaskDaily() {
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 7);
-        today.set(Calendar.MINUTE, 51);
-        today.set(Calendar.SECOND, 0);
         long delay = 1000L;
         long period = 1000L * 60L * 60L * 24L;
-        timer.schedule(myTask, today.getTime(), TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)); // period: 1 day
-        //timer.scheduleAtFixedRate(myTask, delay, period);
+        timer.scheduleAtFixedRate(myTask, delay, period);
         System.out.println("MyTask begins and repeats every day!!" + new Date());
-//        try {
-//            Thread.sleep(20000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
@@ -90,7 +85,7 @@ public class MyTaskTest {
         timer.scheduleAtFixedRate(myTask, delay, period);
         System.out.println("MyTask begins and repeats at a specific interval!!" + new Date());
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -98,4 +93,19 @@ public class MyTaskTest {
         System.out.println("Timer cancelled");
     }
 
+    @Test
+    public void schedulingRepeatedTaskUsingExecutorServiceTest() {
+        long delay = 1000L;
+        long period = 1000L;
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+        scheduledExecutorService.scheduleAtFixedRate(myTask, delay, period, TimeUnit.MILLISECONDS);
+        System.out.println("MyTask begins and repeats at a specific interval!!" + new Date());
+
+        try {
+            Thread.sleep(delay + period * 3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        scheduledExecutorService.shutdown();
+    }
 }
